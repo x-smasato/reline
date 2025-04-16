@@ -81,7 +81,7 @@ class Reline::Unicode
     end
     utf8_mbchar = mbchar.encode(Encoding::UTF_8)
     
-    if utf8_mbchar.include?("\u20E3")
+    if utf8_mbchar.codepoints.include?(0x20E3)
       return 2
     end
     
