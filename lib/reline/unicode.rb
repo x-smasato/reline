@@ -80,6 +80,11 @@ class Reline::Unicode
       return 1
     end
     utf8_mbchar = mbchar.encode(Encoding::UTF_8)
+    
+    if utf8_mbchar.include?("\u20E3")
+      return 2
+    end
+    
     ord = utf8_mbchar.ord
     chunk_index = EastAsianWidth::CHUNK_LAST.bsearch_index { |o| ord <= o }
     size = EastAsianWidth::CHUNK_WIDTH[chunk_index]
