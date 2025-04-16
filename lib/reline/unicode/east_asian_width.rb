@@ -494,6 +494,7 @@ class Reline::Unicode::EastAsianWidth
     [0x20dc, 0],
     [0x20e0, 1],
     [0x20e1, 0],
+    [0x20e3, 0],
     [0x20e4, 1],
     [0x20f0, 0],
     [0x2102, 1],
