@@ -42,14 +42,18 @@ class Reline::Unicode
   WIDTH_SCANNER = /\G(?:(#{NON_PRINTING_START})|(#{NON_PRINTING_END})|(#{CSI_REGEXP})|(#{OSC_REGEXP})|(\X))/o
 
   def self.escape_for_print(str)
-    str.chars.map! { |gr|
+    str.grapheme_clusters.map! { |gr|
       case gr
       when -"\n"
         gr
       when -"\t"
         -'  '
       else
-        EscapedPairs[gr.ord] || gr
+        if gr.codepoints.include?(0x20E3)
+          gr
+        else
+          EscapedPairs[gr.ord] || gr
+        end
       end
     }.join
   end
@@ -166,7 +170,11 @@ class Reline::Unicode
         seq << osc unless in_zero_width
       when gc
         unless in_zero_width
-          mbchar_width = get_mbchar_width(gc)
+          if gc.codepoints.include?(0x20E3)
+            mbchar_width = 2
+          else
+            mbchar_width = get_mbchar_width(gc)
+          end
           if (width += mbchar_width) > max_width
             width = mbchar_width
             lines << seq.dup
@@ -218,7 +226,11 @@ class Reline::Unicode
           next
         end
 
-        mbchar_width = get_mbchar_width(gc)
+        if gc.codepoints.include?(0x20E3)
+          mbchar_width = 2
+        else
+          mbchar_width = get_mbchar_width(gc)
+        end
         prev_width = total_width
         total_width += mbchar_width
 
