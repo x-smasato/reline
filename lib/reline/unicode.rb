@@ -114,14 +114,22 @@ class Reline::Unicode
         when csi, osc
         when gc
           unless in_zero_width
-            width += get_mbchar_width(gc)
+            if gc.codepoints.include?(0x20E3)
+              width += 2
+            else
+              width += get_mbchar_width(gc)
+            end
           end
         end
       end
       width
     else
       str.encode(Encoding::UTF_8).grapheme_clusters.inject(0) { |w, gc|
-        w + get_mbchar_width(gc)
+        if gc.codepoints.include?(0x20E3)
+          w + 2
+        else
+          w + get_mbchar_width(gc)
+        end
       }
     end
   end
